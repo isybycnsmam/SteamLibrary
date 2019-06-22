@@ -33,29 +33,16 @@ namespace SteamLibrary {
 			return generateSteamGuardCodeForTime(secret, serverTime);
 
 		}
-		
-		private static long getInfoFromServer(string secret){
 
-			try {
+		private static long getInfoFromServer(string secret) {
 
-				var request = new HttpRequestMessage(HttpMethod.Post, "https://api.steampowered.com:443/ITwoFactorService/QueryTime/v0001");
+			var request = new HttpRequestMessage(HttpMethod.Post, "https://api.steampowered.com:443/ITwoFactorService/QueryTime/v0001");
+			var response = client.SendAsync(request).Result.EnsureSuccessStatusCode();
+			var responseString = response.Content.ReadAsStringAsync().Result;
+			dynamic stuff = JsonConvert.DeserializeObject(responseString);
 
-				var x = client.SendAsync(request).Result;
+			return stuff.response.server_time ?? throw new HttpRequestException("server_time server time is empty");
 
-				if (!x.IsSuccessStatusCode)
-					throw new HttpRequestException("x.IsSuccessStatusCode = false");
-
-				var responseString = x.Content.ReadAsStringAsync().Result;
-
-				x?.Dispose();
-
-				dynamic stuff = JsonConvert.DeserializeObject(responseString);
-
-				return stuff.response.server_time;
-
-			}
-			catch (Exception ex) { throw new HttpRequestException("getInfoFromServer", ex); }
-			
 		}
 
 		private static string generateSteamGuardCodeForTime(string secret, long time) {
@@ -89,8 +76,9 @@ namespace SteamLibrary {
 				return Encoding.UTF8.GetString(codeArray);
 
 			}
-			catch (Exception ex) { throw new CryptographicException("generateSteamGuardCodeForTime", ex); }
+			catch (Exception ex) { throw new CryptographicException("generating two factor code failed", ex); }
+
 		}
-		
+
 	}
 }
