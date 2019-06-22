@@ -46,9 +46,8 @@ namespace SteamLibrary {
 			Password = password;
 			if (authorization.Length == 28)
 				Token = authorization;
-
+				
 			var encryptedPassword = getRSA(out var ts, Password);
-
 			sendLoginDataToSteam(encryptedPassword, remember, authorization, ts, captcha);
 
 			submitCookies();
@@ -69,10 +68,10 @@ namespace SteamLibrary {
 			if (stuff.success != "true")
 				throw new HttpRequestException("RSA Json status response is false", new Exception(responseString));
 
-			var mod = stuff.publickey_mod;
-			var exp = stuff.publickey_exp;
+			string mod = stuff.publickey_mod;
+			string exp = stuff.publickey_exp;
 			ts = stuff.timestamp;
-
+			
 			if (string.IsNullOrEmpty(mod) || string.IsNullOrEmpty(exp) || string.IsNullOrEmpty(ts))
 				throw new ArgumentNullException("mod / exp / ts is empty ");
 
@@ -111,10 +110,9 @@ namespace SteamLibrary {
 		}
 
 		private void submitCookies() {
-
+			//before login you must confirm cookies by sending following request
 			var request = new HttpRequestMessage(HttpMethod.Post, "https://steamcommunity.com/");
 			client.SendAsync(request).Result.EnsureSuccessStatusCode();
-
 		}
 		
 
@@ -124,7 +122,7 @@ namespace SteamLibrary {
 			var result = "";
 
 			for (int i = 0; i < 24; i++)
-				result += alphabet[rnd.Next(alphabet.Length];
+				result += alphabet[rnd.Next(alphabet.Length)];
 
 			return result;
 		}

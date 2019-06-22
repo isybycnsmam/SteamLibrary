@@ -15,9 +15,9 @@ namespace SteamLibrary {
 		/// <param name="customCookies">Cookies that you can append to client</param>
 		/// <param name="resetHttpClientCookies">if user would like clear http client that it'll then only contain steam cookies</param>
 		/// <returns>Page session cookies</returns>
-		public CookieCollection LoginViaSteam(string loginPage, CookieCollection customCookies = null, bool resetHttpClientCookies = true) {
-
-			if (resetHttpClientCookies)
+		public CookieCollection LoginViaSteam(string loginPage, CookieCollection customCookies = null, bool resetCookies = false) {
+			//
+			if (resetCookies)
 				resetHttpClient();
 
 			handler.CookieContainer.Add(customCookies ?? new CookieCollection());
