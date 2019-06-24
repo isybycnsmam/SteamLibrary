@@ -64,18 +64,12 @@ namespace SteamLibrary {
 			var responseString = response.Content.ReadAsStringAsync().Result;
 			dynamic stuff = JsonConvert.DeserializeObject(responseString);
 
-
 			if (stuff.success != "true")
 				throw new HttpRequestException("RSA Json status response is false", new Exception(responseString));
 
-			string mod = stuff.publickey_mod;
-			string exp = stuff.publickey_exp;
 			ts = stuff.timestamp;
 			
-			if (string.IsNullOrEmpty(mod) || string.IsNullOrEmpty(exp) || string.IsNullOrEmpty(ts))
-				throw new ArgumentNullException("mod / exp / ts is empty ");
-
-			return encryptPassword(mod, exp, password);
+			return encryptPassword(stuff.publickey_mod, stuff.publickey_exp, password);
 
 		}
 
