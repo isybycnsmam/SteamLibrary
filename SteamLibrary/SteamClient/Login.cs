@@ -69,7 +69,7 @@ namespace SteamLibrary {
 
 			ts = stuff.timestamp;
 			
-			return encryptPassword(stuff.publickey_mod, stuff.publickey_exp, password);
+			return encryptPassword(stuff.publickey_mod.ToString(), stuff.publickey_exp.ToString(), password);
 
 		}
 
@@ -79,7 +79,7 @@ namespace SteamLibrary {
 				{"captcha_text", captcha.text},
 				{"captchagid", captcha.gid},
 				{"password", encryptedPassword},
-				{"remember_login", remember.ToString()},
+				{"remember_login", remember.ToString().ToLower()},
 				{"rsatimestamp", ts},
 				{"twofactorcode", string.IsNullOrEmpty(Token) ? authorization : SteamGuard.GenerateTwoFactorCode(Token)},
 				{"username", User}

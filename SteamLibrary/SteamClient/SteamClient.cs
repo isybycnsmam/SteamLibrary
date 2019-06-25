@@ -9,13 +9,27 @@ using System.Reflection;
 namespace SteamLibrary {
 	public sealed partial class SteamClient {
 
+		/// <summary>
+		/// Username used to log in
+		/// </summary>
 		public string User { get; private set; }
+		/// <summary>
+		/// Password used to log in
+		/// </summary>
 		public string Password { get; private set; }
+		/// <summary>
+		/// token (shared secret) is for generating two factor codes,
+		/// See <a href="https://github.com/SteamTimeIdler/stidler/wiki/Getting-your-%27shared_secret%27-code-for-use-with-Auto-Restarter-on-Mobile-Authentication">How to get</a>
+		/// 
+		/// </summary>
 		public string Token { get; private set; } = null;
 
 		private HttpClientHandler handler;
 		private HttpClient client;
 
+		/// <summary>
+		/// Cookies from HttpClient
+		/// </summary>
 		public CookieCollection Cookies {
 			get {
 				var allCookies = new CookieCollection();
@@ -31,7 +45,7 @@ namespace SteamLibrary {
 				return allCookies;
 			}
 		}
-
+		
 		public SteamClient() => resetHttpClient();
 		private void resetHttpClient() {
 			var cookies = new CookieCollection();

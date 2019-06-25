@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SteamLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:SteamLibrary.SteamClient.Captcha">
+            <summary>
+            Class that contains all info about captcha that you must fill and pass again into Login function
+            </summary>
+            <seealso cref="M:SteamLibrary.SteamClient.Login(System.String,System.String,System.String,System.Boolean,SteamLibrary.SteamClient.Captcha)"/>
+        </member>
+        <member name="P:SteamLibrary.SteamClient.User">
+            <summary>
+            Username used to log in
+            </summary>
+        </member>
+        <member name="P:SteamLibrary.SteamClient.Password">
+            <summary>
+            Password used to log in
+            </summary>
+        </member>
+        <member name="P:SteamLibrary.SteamClient.Token">
+            <summary>
+            token (shared secret) is for generating two factor codes,
+            See <a href="https://github.com/SteamTimeIdler/stidler/wiki/Getting-your-%27shared_secret%27-code-for-use-with-Auto-Restarter-on-Mobile-Authentication">How to get</a>
+            
+            </summary>
+        </member>
+        <member name="P:SteamLibrary.SteamClient.Cookies">
+            <summary>
+            Cookies from HttpClient
+            </summary>
+        </member>
+        <member name="M:SteamLibrary.SteamClient.#ctor(System.Net.CookieCollection)">
+            <summary>
+            Constructor with parrameter that sets cookies to HttpClient
+            </summary>
+            <param name="cookies">Cookies to add to HttpClient</param>
+        </member>
+        <member name="M:SteamLibrary.SteamClient.Login(System.String,System.String,System.String,System.Boolean,SteamLibrary.SteamClient.Captcha)">
+            <summary>
+            Method logs u to steam
+            </summary>
+            <exception cref="T:System.ArgumentNullException">Password or username is null or empty</exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">Error in sending requests</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Cryptobraphic transactions failed</exception>
+            <exception cref="T:SteamLibrary.Exceptions.CaptchaNeededException">You must fill the captcha to login, may apperar when you are trying to login multiple times, contains captcha object that contains info about captcha that you should resend in next attemp</exception>
+            <param name="user">Login to steam</param>
+            <param name="password">Password to steam</param>
+            <param name="authorization">Token to generate code or code if needed</param>
+            <param name="remember">Remember login</param>
+            <param name="captcha">Object that contains data about captcha id and text</param>
+        </member>
+        <member name="M:SteamLibrary.SteamClient.LoginViaSteam(System.String,System.Net.CookieCollection,System.Boolean)">
+            <summary>
+            This method log you into any steam based site without cloudflare
+            </summary>
+            <exception cref="T:System.Net.Http.HttpRequestException">Error in sending requests, contains inner exception</exception>
+            <exception cref="T:SteamLibrary.Exceptions.InvalidRequestCallbackException">After sending request the calback contains unexpected value, contains </exception>
+            <param name="loginPage">Link to the login page</param>
+            <param name="customCookies">Cookies that you can append to client</param>
+            <param name="resetCookies">True to clear all cookies without steam cookies</param>
+            <returns>Page session cookies</returns>
+        </member>
+        <member name="M:SteamLibrary.SteamClient.AutomaticLoginViaSteam(System.String,System.Net.CookieCollection,System.Boolean)">
+            <summary>
+            This method refers to LoginViaSteam but first prepares cookies and is based on /login-steam path
+            </summary>
+            <seealso cref="M:SteamLibrary.SteamClient.LoginViaSteam(System.String,System.Net.CookieCollection,System.Boolean)"/>
+            <param name="pageLoginLink">this function supports only /login-steam path based sites</param>
+            <param name="customCookies">Cookies that you can append to client</param>
+            <param name="resetCookies">True to clear all cookies without steam cookies\</param>
+            <returns>Page session cookies</returns>
+        </member>
+        <member name="T:SteamLibrary.SteamGuard">
+            <summary>
+            Use this class to generate two factor codes
+            </summary>
+        </member>
+        <member name="M:SteamLibrary.SteamGuard.GenerateTwoFactorCode(System.String)">
+            <summary>
+            Method that generates two factor code from secret with can be found in steam mobile app files
+            </summary>
+            <exception cref="T:System.ArgumentException">Secret is not valid</exception>
+            <exception cref="T:System.Net.Http.HttpRequestException">Error in sending requests, contains inner exception</exception>
+            <exception cref="T:System.Security.Cryptography.CryptographicException">Cryptobraphic transactions failed</exception>
+            <param name="secret">Token from mobile app</param>
+            <returns>Guard code</returns>
+        </member>
+    </members>
+</doc>

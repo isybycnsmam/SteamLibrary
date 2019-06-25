@@ -63,6 +63,7 @@ namespace SteamLibrary {
 		/// <summary>
 		/// This method refers to LoginViaSteam but first prepares cookies and is based on /login-steam path
 		/// </summary>
+		/// <seealso cref="LoginViaSteam"/>
 		/// <param name="pageLoginLink">this function supports only /login-steam path based sites</param>
 		/// <param name="customCookies">Cookies that you can append to client</param>
 		/// <param name="resetCookies">True to clear all cookies without steam cookies\</param>

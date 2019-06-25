@@ -6,6 +6,9 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace SteamLibrary {
+	/// <summary>
+	/// Use this class to generate two factor codes
+	/// </summary>
 	public static class SteamGuard {
 
 		private static HttpClient client = new HttpClient();
