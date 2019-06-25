@@ -1,22 +1,24 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
 using SteamLibrary.Exceptions;
 
 namespace SteamLibrary {
 	public partial class SteamClient {
 
 		/// <summary>
-		/// This method logins you to any steam based site without cloudflare
+		/// This method log you into any steam based site without cloudflare
 		/// </summary>
 		/// <exception cref="HttpRequestException">Error in sending requests, contains inner exception</exception>
 		/// <exception cref="InvalidRequestCallbackException">After sending request the calback contains unexpected value, contains </exception>
 		/// <param name="loginPage">Link to the login page</param>
 		/// <param name="customCookies">Cookies that you can append to client</param>
-		/// <param name="resetHttpClientCookies">if user would like clear http client that it'll then only contain steam cookies</param>
+		/// <param name="resetCookies">True to clear all cookies without steam cookies</param>
 		/// <returns>Page session cookies</returns>
 		public CookieCollection LoginViaSteam(string loginPage, CookieCollection customCookies = null, bool resetCookies = false) {
-			//
+
 			if (resetCookies)
 				resetHttpClient();
 
@@ -55,6 +57,51 @@ namespace SteamLibrary {
 					resultCookies.Add(cookie);
 
 			return resultCookies;
+
+		}
+
+		/// <summary>
+		/// This method refers to LoginViaSteam but first prepares cookies and is based on /login-steam path
+		/// </summary>
+		/// <param name="pageLoginLink">this function supports only /login-steam path based sites</param>
+		/// <param name="customCookies">Cookies that you can append to client</param>
+		/// <param name="resetCookies">True to clear all cookies without steam cookies\</param>
+		/// <returns>Page session cookies</returns>
+		public CookieCollection AutomaticLoginViaSteam(string pageLoginLink, CookieCollection customCookies = null, bool resetCookies = false) {
+
+			if (resetCookies)
+				resetHttpClient();
+
+			handler.CookieContainer.Add(customCookies ?? new CookieCollection());
+
+			var uri = new Uri(pageLoginLink);
+			var origin = $"{uri.Scheme}://{uri.Host}";
+
+			client.GetAsync(origin).Result.EnsureSuccessStatusCode();
+
+			//cloudflare? ===============================================
+
+
+			if (uri.AbsolutePath == "/login-steam") {
+
+				//sending request to get steam page
+				var request = new HttpRequestMessage(HttpMethod.Post, pageLoginLink);
+				request.Headers.Add("Origin", origin);
+				request.Headers.Host = uri.Host;
+				var result = client.SendAsync(request).Result.EnsureSuccessStatusCode();
+
+				//get path hopefully to steam login page
+				var location = result.RequestMessage.RequestUri.ToString();
+
+				Console.WriteLine(location);
+
+				if (new Uri(location).Host != "steamcommunity.com")
+					throw new InvalidRequestCallbackException("returned adress isn't steam page", new Uri(location));
+
+				return LoginViaSteam(location);
+			}
+			else
+				throw new NotImplementedException("Automatic method can not recognise this method");
 
 		}
 
