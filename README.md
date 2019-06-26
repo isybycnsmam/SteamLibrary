@@ -19,5 +19,13 @@ This library supports
 
 
 
+Useage:
+//create account object
+var account = new SteamClient();
 
-Useage
+//token = steam shared secret(28 chars) if you have two step verification
+//token is also generated token and then you dont need to know secret
+account.Login("username", "password", "token")
+
+////////now you are loged if any exception was not thrown//////////
+//for now you can only
